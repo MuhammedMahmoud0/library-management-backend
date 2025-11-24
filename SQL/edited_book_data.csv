@@ -1,0 +1,57 @@
+Category,Title,Author,Price,Quantity,Available_Copies,Pub_Year,Pub_Name,Cover,Rating,Availability
+Historical fiction,A Tale of Two Cities,Charles Dickens,124,294,69,1859,London: Chapman & Hall,https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Tales_serial.jpg/250px-Tales_serial.jpg,4.25,1
+Fantasy,The Little Prince,Antoine de Saint-Exupéry,84,244,74,1943,Reynal & Hitchcock (U.S.) Gallimard (France) [ 7 ],https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Littleprince.JPG/250px-Littleprince.JPG,1.25,1
+Fantasy,The Alchemist,Paulo Coelho,68,164,132,1988,HarperTorch (English translation) Originally a novel written in Portuguese,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/TheAlchemist.jpg/250px-TheAlchemist.jpg,4.58,1
+Fantasy,Harry Potter and the Philosopher's Stone,J. K. Rowling,156,267,66,1997,Bloomsbury (UK) Scholastic (US),https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg/250px-Harry_Potter_and_the_Philosopher%27s_Stone_Book_Cover.jpg,1.15,1
+Mystery,And Then There Were None,Agatha Christie,186,239,99,1939,Collins Crime Club,https://upload.wikimedia.org/wikipedia/en/thumb/2/26/And_Then_There_Were_None_US_First_Edition_Cover_1940.jpg/250px-And_Then_There_Were_None_US_First_Edition_Cover_1940.jpg,4.91,1
+Family saga,Dream of the Red Chamber,Cao Xueqin,70,235,9,1791,Collins Crime Club,https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Hongloumeng2.jpg/250px-Hongloumeng2.jpg,1.94,1
+Fantasy,The Hobbit,J. R. R. Tolkien,143,265,166,1937,George Allen & Unwin (UK),https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/TheHobbit_FirstEdition.jpg/250px-TheHobbit_FirstEdition.jpg,4.43,1
+Fantasy,Alice's Adventures in Wonderland,Lewis Carroll,109,153,140,1865,Macmillan,https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Alice%27s_Adventures_in_Wonderland_cover_%281865%29.jpg/250px-Alice%27s_Adventures_in_Wonderland_cover_%281865%29.jpg,3.84,1
+Adventure,She: A History of Adventure,H. Rider Haggard,181,123,10,1887,Longmans,https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/SHE%2C_A_History_of_Adventure_%281st_Edition_Cover%29%2C_by_H._Rider_Haggard.jpg/250px-SHE%2C_A_History_of_Adventure_%281st_Edition_Cover%29%2C_by_H._Rider_Haggard.jpg,2.93,1
+Mystery,The Da Vinci Code,Dan Brown,69,211,174,2003,Doubleday (US),https://upload.wikimedia.org/wikipedia/en/6/6b/DaVinciCode.jpg,3.92,1
+Fantasy,Harry Potter and the Chamber of Secrets,J. K. Rowling,89,126,27,1998,Bloomsbury (UK),https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Harry_Potter_and_the_Chamber_of_Secrets.jpg/250px-Harry_Potter_and_the_Chamber_of_Secrets.jpg,3.02,1
+Coming-of-age,The Catcher in the Rye,J. D. Salinger,112,101,31,1951,"Little, Brown and Company",https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg/250px-The_Catcher_in_the_Rye_%281951%2C_first_edition_cover%29.jpg,1.15,1
+Fantasy,Harry Potter and the Prisoner of Azkaban,J. K. Rowling,161,142,23,1999,Bloomsbury (UK),https://upload.wikimedia.org/wikipedia/en/a/a0/Harry_Potter_and_the_Prisoner_of_Azkaban.jpg,4.39,1
+Fantasy,Harry Potter and the Goblet of Fire,J. K. Rowling,145,250,123,2000,Bloomsbury (UK),https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/Harry_Potter_and_the_Goblet_of_Fire_cover.png/250px-Harry_Potter_and_the_Goblet_of_Fire_cover.png,2.05,1
+Fantasy,Harry Potter and the Half-Blood Prince,J. K. Rowling,63,178,168,2005,Bloomsbury (UK),https://upload.wikimedia.org/wikipedia/en/thumb/b/b5/Harry_Potter_and_the_Half-Blood_Prince_cover.png/250px-Harry_Potter_and_the_Half-Blood_Prince_cover.png,2.05,1
+Fantasy,Harry Potter and the Deathly Hallows,J. K. Rowling,122,101,18,2007,Bloomsbury (UK),https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/Harry_Potter_and_the_Deathly_Hallows.jpg/250px-Harry_Potter_and_the_Deathly_Hallows.jpg,4.21,1
+Romance,The Bridges of Madison County,Robert James Waller,184,296,60,1992,"Warner Books , Inc.",https://upload.wikimedia.org/wikipedia/en/c/c8/BridgesOfMadisonCounty.jpg,1.65,1
+Magic realism,One Hundred Years of Solitude,Gabriel García Márquez,97,262,182,1967,"Editorial Sudamericana, Harper & Row (US) Jonathan Cape (UK)",https://upload.wikimedia.org/wikipedia/en/thumb/a/a0/Cien_a%C3%B1os_de_soledad_%28book_cover%2C_1967%29.jpg/250px-Cien_a%C3%B1os_de_soledad_%28book_cover%2C_1967%29.jpg,3.8,1
+Novel,Lolita,Vladimir Nabokov,194,179,159,1955,Olympia Press,https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Lolita_1955.JPG/250px-Lolita_1955.JPG,3.34,1
+Children's fiction,Heidi,Johanna Spyri,126,283,90,1880,Friedrich Andreas Perthes,https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Spyri_Heidi_Cover_1887.jpg/250px-Spyri_Heidi_Cover_1887.jpg,2.14,1
+"Manual
+",The Common Sense Book of Baby and Child Care,Benjamin Spock,170,298,93,1946,"Duell, Sloan and Pearce (New York City)",https://upload.wikimedia.org/wikipedia/en/c/cd/The_Common_Sense_Book_of_Baby_and_Child_Care_%28hardcover%29.jpg,3.59,1
+Children's novel,Anne of Green Gables,Lucy Maud Montgomery,96,274,53,1908,L.C. Page & Co. [ 4 ],https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Montgomery_Anne_of_Green_Gables.jpg/250px-Montgomery_Anne_of_Green_Gables.jpg,3.57,1
+Children's literature,Black Beauty,Anna Sewell,133,157,91,1877,Jarrold & Sons,https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/BlackBeautyCoverFirstEd1877.jpeg/250px-BlackBeautyCoverFirstEd1877.jpeg,3.76,1
+Historical novel,The Name of the Rose,Umberto Eco,91,212,59,1980,Bompiani (Italy) Harcourt (U.S.),https://upload.wikimedia.org/wikipedia/en/e/eb/The_Name_of_the_Rose.jpg,3.2,1
+War,The Eagle Has Landed,Jack Higgins,104,197,128,1975,Collins,https://upload.wikimedia.org/wikipedia/en/d/dc/TheEagleHasLanded.jpg,1.46,1
+Children's fiction,Watership Down,Richard Adams,150,240,64,1972,Rex Collings,https://upload.wikimedia.org/wikipedia/en/thumb/5/5e/Richard_Adams_WatershipDown.jpg/250px-Richard_Adams_WatershipDown.jpg,2.36,1
+"nonfiction
+",The Hite Report,Shere Hite,156,129,123,1976,Rex Collings,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Shere_Hite.jpg/250px-Shere_Hite.jpg,2.53,1
+Children's fiction,Charlotte's Web,E. B. White,129,175,25,1952,Harper & Brothers,https://upload.wikimedia.org/wikipedia/en/thumb/f/fe/CharlotteWeb.png/250px-CharlotteWeb.png,1.42,1
+Novel,The Ginger Man,J. P. Donleavy,118,180,146,1955,"Neville Spearman , Olympia Press",https://upload.wikimedia.org/wikipedia/en/e/ef/GingerMan.JPG,0.52,1
+Bible study,The Purpose Driven Life,Rick Warren,172,182,26,2002,Zondervan,https://upload.wikimedia.org/wikipedia/en/2/25/Pupose.jpg,2.7,1
+Children's literature,The Tale of Peter Rabbit,Beatrix Potter,195,188,8,1902,Frederick Warne & Co.,https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Peter_Rabbit_first_edition_1902a.jpg/250px-Peter_Rabbit_first_edition_1902a.jpg,1.82,1
+Novella,Jonathan Livingston Seagull,Richard Bach,135,261,41,1970,Macmillan Publishers (United States),https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Johnathan_Livingston_Seagull.jpg/250px-Johnathan_Livingston_Seagull.jpg,3.98,1
+Children's literature,The Very Hungry Caterpillar,Eric Carle,82,205,58,1969,World Publishing Company (US) Hamish Hamilton (UK),https://upload.wikimedia.org/wikipedia/en/thumb/b/b5/HungryCaterpillar.JPG/250px-HungryCaterpillar.JPG,2.81,1
+"Essay/literature
+",A Message to Garcia,Elbert Hubbard,150,138,110,1899,The Roycrofters,https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/An_early_reprint_of_%22A_Message_to_Garcia%22.jpg/250px-An_early_reprint_of_%22A_Message_to_Garcia%22.jpg,3.54,1
+Southern Gothic,To Kill a Mockingbird,Harper Lee,64,276,24,1960,J. B. Lippincott & Co.,https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg/250px-To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg,2.16,1
+Gothic horror,Flowers in the Attic,V. C. Andrews,54,130,43,1979,Simon & Schuster,https://upload.wikimedia.org/wikipedia/en/thumb/9/99/Dollanganger01_FlowersInTheAttic.jpg/200px-Dollanganger01_FlowersInTheAttic.jpg,3.67,1
+Popular science,Cosmos,Carl Sagan,115,184,9,1980,Random House Hachette UK (1995 Ed.),https://upload.wikimedia.org/wikipedia/en/9/91/Cosmos_book.gif,4.02,1
+Philosophical novel,Sophie's World,Jostein Gaarder,149,122,1,1991,Aschehoug,https://upload.wikimedia.org/wikipedia/en/thumb/0/00/Sofies_verden.jpg/250px-Sofies_verden.jpg,0.57,1
+mystery,Angels & Demons,Dan Brown,56,244,5,2000,Aschehoug,https://upload.wikimedia.org/wikipedia/en/5/5f/AngelsAndDemons.jpg,3.24,1
+Self-help,Alcoholics Anonymous,William Griffith Wilson,64,278,137,1939,Alcoholics Anonymous World Services,https://upload.wikimedia.org/wikipedia/en/1/17/Big_book_2nd_edition.jpg,3.65,1
+Novel,Kane and Abel,Jeffrey Archer,186,296,64,1979,Hodder & Stoughton,https://upload.wikimedia.org/wikipedia/en/f/f3/KaneAndAbel.jpg,4.57,1
+Socialist realist,How the Steel Was Tempered,Nikolai Ostrovsky,62,206,59,1932,Young Guard (serial),https://upload.wikimedia.org/wikipedia/en/7/74/How_the_Steel_Was_Tempered_%28novel%29_cover.jpg,3.95,1
+Historical novel,War and Peace,Leo Tolstoy,50,258,250,1869,The Russian Messenger (serial),https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Tolstoy_-_War_and_Peace_-_first_edition%2C_1869.jpg/250px-Tolstoy_-_War_and_Peace_-_first_edition%2C_1869.jpg,3.24,1
+Fantasy,The Adventures of Pinocchio,Carlo Collodi,165,235,215,1881,Libreria Editrice Felice Paggi,https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Pinocchio.jpg/250px-Pinocchio.jpg,3.8,1
+Historical non-fiction,The Diary of Anne Frank,Anne Frank,72,115,13,1947,Contact Publishing [ nl ],https://upload.wikimedia.org/wikipedia/en/4/47/Het_Achterhuis_%28Diary_of_Anne_Frank%29_-_front_cover%2C_first_edition.jpg,1.15,1
+"Self-help
+",Your Erroneous Zones,Wayne Dyer,178,291,93,1976,Contact Publishing [ nl ],https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Your_Erroneous_Zones.jpg/250px-Your_Erroneous_Zones.jpg,1.41,1
+"Romantic family saga
+",The Thorn Birds,Colleen McCullough,50,266,147,1977,Harper & Row,https://upload.wikimedia.org/wikipedia/en/5/53/Thorn_Birds-Colleen_McCullough.jpg,1.7,1
+Bildungsroman,The Kite Runner,Khaled Hosseini,97,203,180,2003,Riverhead Books,https://upload.wikimedia.org/wikipedia/en/thumb/6/62/Kite_runner.jpg/250px-Kite_runner.jpg,2.4,1
+"Novel
+",Valley of the Dolls,Jacqueline Susann,81,227,6,1966,Bernard Geis Associates,https://upload.wikimedia.org/wikipedia/en/thumb/8/85/Valley_of_the_dolls_novel_first_edition_1966.jpg/250px-Valley_of_the_dolls_novel_first_edition_1966.jpg,0.91,1
+Self-help,How to Win Friends and Influence People,Dale Carnegie,116,108,72,1936,Simon & Schuster,https://upload.wikimedia.org/wikipedia/en/thumb/3/33/How-to-win-friends-and-influence-people.jpg/250px-How-to-win-friends-and-influence-people.jpg,4.37,1
