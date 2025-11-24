@@ -1,134 +1,107 @@
--- 4. AUTOMATION TRIGGERS (The Logic Layer)
--- =======================================================================================
+use library_db;
 
 DELIMITER $$
-
--- Trigger 1: Auto-Decrease Inventory when Book is Borrowed
-CREATE TRIGGER after_borrow_insert
+CREATE TRIGGER trg_after_borrow_insert
 AFTER INSERT ON Borrowing
 FOR EACH ROW
 BEGIN
-    UPDATE Books 
-    SET Available_Copies = Available_Copies - 1,
-        Availability = IF(Available_Copies - 1 > 0, TRUE, FALSE)
+    UPDATE Books
+    SET Available_Copies = Available_Copies - 1
     WHERE BookID = NEW.BookID;
 END$$
 
--- Trigger 2: Auto-Increase Inventory when Book is Returned
-CREATE TRIGGER after_borrow_update
+CREATE TRIGGER trg_after_borrow_update
 AFTER UPDATE ON Borrowing
 FOR EACH ROW
 BEGIN
-    IF NEW.Status = 'Returned' AND OLD.Status != 'Returned' THEN
-        UPDATE Books 
-        SET Available_Copies = Available_Copies + 1,
-            Availability = TRUE
+    IF NEW.ReturnDate IS NOT NULL AND OLD.ReturnDate IS NULL THEN
+        UPDATE Books
+        SET Available_Copies = Available_Copies + 1
         WHERE BookID = NEW.BookID;
     END IF;
 END$$
 
--- Trigger 3: Auto-Calculate Book Rating
-CREATE TRIGGER after_rating_insert
-AFTER INSERT ON Cus_Rating
+CREATE TRIGGER trg_before_borrow_insert
+BEFORE INSERT ON Borrowing
 FOR EACH ROW
 BEGIN
-    UPDATE Books
-    SET Rating = (SELECT AVG(Rating) FROM Cus_Rating WHERE BookID = NEW.BookID)
-    WHERE BookID = NEW.BookID;
-END$$
+    DECLARE v_available INT;
+    SELECT Available_Copies INTO v_available
+    FROM Books WHERE BookID = NEW.BookID;
 
-DELIMITER ;
-
--- =======================================================================================
--- 5. STORED PROCEDURES (Complex Business Logic)
--- =======================================================================================
-
-DELIMITER $$
-
--- Procedure: RETURN BOOK & CALCULATE FINE
--- Objective: Automatically calculate fines for late returns
--- Usage: CALL ReturnBook(101); -- Where 101 is BorrowID
-CREATE PROCEDURE ReturnBook(IN p_BorrowID INT)
-BEGIN
-    DECLARE v_DueDate DATETIME;
-    DECLARE v_Penalty DECIMAL(10,2) DEFAULT 20.00; -- Fixed penalty amount
-    
-    -- 1. Get the Due Date
-    SELECT DueDate INTO v_DueDate FROM Borrowing WHERE BorrowID = p_BorrowID;
-    
-    -- 2. Update Borrowing Table
-    UPDATE Borrowing 
-    SET ReturnDate = NOW(), 
-        Status = 'Returned'
-    WHERE BorrowID = p_BorrowID;
-    
-    -- 3. Check for Late Return & Update Invoice
-    IF NOW() > v_DueDate THEN
-        UPDATE Invoice 
-        SET Fine = v_Penalty, 
-            Status = 'Unpaid' 
-        WHERE BorrowID = p_BorrowID;
+    IF v_available <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No available copies to borrow';
     END IF;
 END$$
 
--- Procedure: REGISTER NEW MEMBER
--- Objective: Handle atomic insert into Login and Customer tables
-CREATE PROCEDURE RegisterMember(
-    IN p_Username VARCHAR(255), 
-    IN p_Password VARCHAR(255), 
-    IN p_FirstName VARCHAR(255), 
-    IN p_LastName VARCHAR(255), 
-    IN p_Email VARCHAR(255)
-)
+CREATE TRIGGER trg_reservation_expire
+BEFORE UPDATE ON Reservation
+FOR EACH ROW
 BEGIN
-    DECLARE v_LoginID INT;
-    
-    START TRANSACTION;
-    
-    -- Insert into Login
-    INSERT INTO Login (Username, Login_Password, Entity_Type) 
-    VALUES (p_Username, p_Password, 'Customer');
-    
-    SET v_LoginID = LAST_INSERT_ID();
-    
-    -- Insert into Customer
-    INSERT INTO Customer (Cus_FirstName, Cus_LastName, Email, Login_ID) 
-    VALUES (p_FirstName, p_LastName, p_Email, v_LoginID);
-    
-    COMMIT;
+    IF NEW.ReservationExpiryDate < CURDATE() THEN
+        SET NEW.Status = 'Expired';
+    END IF;
 END$$
 
-DELIMITER ;
 
--- =======================================================================================
--- 6. REPORT VIEWS (For Admin Dashboard)
--- =======================================================================================
+CREATE PROCEDURE RegisterUser(
+    IN p_FirstName VARCHAR(255),
+    IN p_LastName VARCHAR(255),
+    IN p_BirthDate DATE,
+    IN p_UserName VARCHAR(255),
+    IN p_Password VARCHAR(255),
+    IN p_Role ENUM('admin','customer')
+)
+BEGIN
+    INSERT INTO Users (UserFirstName, UserLastName, UserBirthDate, UserName, UserPassword, UserRole)
+    VALUES (p_FirstName, p_LastName, p_BirthDate, p_UserName, p_Password, p_Role);
+END$$
 
--- View 1: Overdue Books Report
--- Objective: Provide reports on member activity and fines
-CREATE VIEW View_Overdue_Report AS
-SELECT 
-    b.Title,
-    c.Cus_FirstName,
-    c.Cus_LastName,
-    br.DueDate,
-    DATEDIFF(NOW(), br.DueDate) as Days_Overdue,
-    i.Fine
-FROM Borrowing br
-JOIN Books b ON br.BookID = b.BookID
-JOIN Customer c ON br.CusID = c.CusID
-JOIN Invoice i ON br.BorrowID = i.BorrowID
-WHERE br.Status = 'Overdue' OR (br.Status = 'Borrowed' AND NOW() > br.DueDate);
+CREATE PROCEDURE BorrowBook(
+    IN p_BookID INT,
+    IN p_UserID INT
+)
+BEGIN
+    INSERT INTO Borrowing (BookID, CusID, BorrowDate, DueDate, Status)
+    VALUES (p_BookID, p_UserID, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 14 DAY), 'Borrowed');
+END$$
 
--- View 2: Most Popular Books
--- Objective: Generate reports on most borrowed books
-CREATE VIEW View_Popular_Books AS
-SELECT 
-    b.Title,
-    b.Author,
-    COUNT(br.BorrowID) as Times_Borrowed,
-    b.Rating
-FROM Books b
-LEFT JOIN Borrowing br ON b.BookID = br.BookID
-GROUP BY b.BookID
-ORDER BY Times_Borrowed DESC;
+CREATE PROCEDURE ReturnBook(
+    IN p_BorrowID INT
+)
+BEGIN
+    DECLARE v_DueDate DATE;
+    DECLARE v_Fine DECIMAL(10,2);
+
+    SELECT DueDate INTO v_DueDate FROM Borrowing WHERE BorrowID = p_BorrowID;
+
+    SET v_Fine = GREATEST(DATEDIFF(CURDATE(), v_DueDate) * 5, 0);
+
+    UPDATE Borrowing
+    SET ReturnDate = CURDATE(), Status = 'Returned'
+    WHERE BorrowID = p_BorrowID;
+
+    INSERT INTO Invoice (BorrowID, Amount, Fine, PaymentDate, Status)
+    VALUES (p_BorrowID, 0, v_Fine, CURDATE(), 'Pending');
+END$$
+
+
+CREATE PROCEDURE ReserveBook(
+    IN p_BookID INT,
+    IN p_UserID INT
+)
+BEGIN
+    INSERT INTO Reservation (BookID, CusID, ReservationDate, ReservationExpiryDate, Status)
+    VALUES (p_BookID, p_UserID, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'Active');
+END$$
+
+CREATE PROCEDURE PayInvoice(
+    IN p_InvoiceID INT
+)
+BEGIN
+    UPDATE Invoice
+    SET Status = 'Paid', PaymentDate = CURDATE()
+    WHERE InvoiceID = p_InvoiceID;
+END$$
+
