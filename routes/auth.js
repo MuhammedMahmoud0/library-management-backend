@@ -18,5 +18,12 @@ router.get("/me", authenticate, me);
 router.post("/admins", authenticate, authorize("admin"), createAdmin);
 // Admin-only: delete any user by id
 router.delete("/users/:id", authenticate, authorize("admin"), deleteUser);
+// Admin-only: list users with pagination
+router.get(
+    "/users",
+    authenticate,
+    authorize("admin"),
+    require("../controllers/authController").listUsers
+);
 
 module.exports = router;

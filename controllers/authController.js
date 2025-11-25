@@ -149,4 +149,43 @@ async function me(req, res) {
     res.json({ user });
 }
 
-module.exports = { register, login, me, createAdmin, deleteUser };
+// Admin-only: list users with pagination and optional search
+async function listUsers(req, res) {
+    const requester = req.user;
+    if (!requester || requester.role !== "admin")
+        return res.status(403).json({ error: "forbidden" });
+
+    const page = Math.max(1, parseInt(req.query.page || "1", 10));
+    const limit = Math.min(
+        100,
+        Math.max(1, parseInt(req.query.limit || "20", 10))
+    );
+    const offset = (page - 1) * limit;
+    const search = req.query.q || req.query.search || "";
+
+    try {
+        let rows, totalRows;
+        if (search) {
+            const like = `%${search}%`;
+            // Limit and offset interpolated as integers to avoid prepared-statement limitations
+            const sql = `SELECT UserID, UserFirstName, UserLastName, UserName, UserRole FROM Users WHERE UserName LIKE ? OR UserFirstName LIKE ? OR UserLastName LIKE ? ORDER BY UserID DESC LIMIT ${limit} OFFSET ${offset}`;
+            [rows] = await pool.query(sql, [like, like, like]);
+            [totalRows] = await pool.execute(
+                "SELECT COUNT(*) as cnt FROM Users WHERE UserName LIKE ? OR UserFirstName LIKE ? OR UserLastName LIKE ?",
+                [like, like, like]
+            );
+        } else {
+            const sql = `SELECT UserID, UserFirstName, UserLastName, UserName, UserRole FROM Users ORDER BY UserID DESC LIMIT ${limit} OFFSET ${offset}`;
+            [rows] = await pool.query(sql);
+            [totalRows] = await pool.query("SELECT COUNT(*) as cnt FROM Users");
+        }
+
+        const total = totalRows[0] && totalRows[0].cnt ? totalRows[0].cnt : 0;
+        res.json({ page, limit, total, users: rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "internal server error" });
+    }
+}
+
+module.exports = { register, login, me, createAdmin, deleteUser, listUsers };
