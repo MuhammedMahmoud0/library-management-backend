@@ -10,7 +10,9 @@ const swaggerSpec = {
         version: "1.0.0",
         description: "Auth endpoints for the Library Management backend",
     },
-    servers: [{ url: process.env.API_URL || "http://localhost:3000" }],
+    // If API_URL is set (production), use it; otherwise use a relative URL ('/') so
+    // Swagger UI issues requests to the same origin as the docs (avoids mixed-content / CORS issues).
+    servers: [{ url: process.env.API_URL || "/" }],
     components: {
         securitySchemes: {
             BearerAuth: {
