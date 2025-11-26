@@ -16,7 +16,12 @@ const DEPLOYED_BACKEND =
     "https://library-management-backend-production.up.railway.app";
 const LOCAL_ORIGIN = process.env.LOCAL_ORIGIN || "http://localhost:3000";
 
-const allowlist = [FRONTEND_ORIGIN, DEPLOYED_BACKEND, LOCAL_ORIGIN];
+const allowlist = [
+    FRONTEND_ORIGIN,
+    DEPLOYED_BACKEND,
+    LOCAL_ORIGIN,
+    "https://library-management-backend-production.up.railway.app/api/docs",
+];
 
 const corsOptions = {
     origin: function (origin, callback) {
