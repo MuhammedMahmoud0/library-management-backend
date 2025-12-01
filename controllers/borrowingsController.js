@@ -10,31 +10,31 @@ function formatDateToSQL(d) {
 
 async function createBorrowing(req, res) {
     const user = req.user;
-    const { BookID, DueDate, BorrowDate } = req.body;
+    const { BookID, BorrowDate, DueDate, Notes } = req.body;
     if (!user) return res.status(401).json({ error: "not authenticated" });
 
     // Accept BookID === 0 as valid; only reject when undefined or null
     if (BookID === undefined || BookID === null)
-        return res.status(400).json({ error: "BookID and DueDate required" });
+        return res.status(400).json({ error: "BookID is required" });
 
-    if (!DueDate)
-        return res.status(400).json({ error: "BookID and DueDate required" });
+    // Parse and validate BorrowDate (default to today)
+    let borrowDate = BorrowDate ? new Date(BorrowDate) : new Date();
+    if (isNaN(borrowDate.getTime()))
+        return res.status(400).json({ error: "Invalid BorrowDate" });
 
-    // Validate dates
-    const due = new Date(DueDate);
-    if (isNaN(due.getTime()))
-        return res.status(400).json({ error: "Invalid DueDate" });
-
-    let borrowDate = new Date();
-    if (BorrowDate) {
-        const bd = new Date(BorrowDate);
-        if (isNaN(bd.getTime()))
-            return res.status(400).json({ error: "Invalid BorrowDate" });
-        borrowDate = bd;
+    // Parse DueDate if provided; otherwise default to BorrowDate + 7 days
+    let dueDate;
+    if (DueDate) {
+        dueDate = new Date(DueDate);
+        if (isNaN(dueDate.getTime()))
+            return res.status(400).json({ error: "Invalid DueDate" });
+    } else {
+        dueDate = new Date(borrowDate.getTime());
+        dueDate.setDate(dueDate.getDate() + 7);
     }
 
-    const dueSql = formatDateToSQL(due);
     const borrowDateSql = formatDateToSQL(borrowDate);
+    const dueSql = formatDateToSQL(dueDate);
 
     try {
         // Start a transaction: ensure book exists and has available copies
@@ -64,11 +64,9 @@ async function createBorrowing(req, res) {
             if (existing && existing.length > 0) {
                 await conn.rollback();
                 conn.release();
-                return res
-                    .status(400)
-                    .json({
-                        error: "User already has an active borrowing for this book",
-                    });
+                return res.status(400).json({
+                    error: "User already has an active borrowing for this book",
+                });
             }
             const [result] = await conn.execute(
                 "INSERT INTO Borrowing (BookID, CusID, BorrowDate, DueDate, Status) VALUES (?, ?, ?, ?, ?)",
