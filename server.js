@@ -23,25 +23,23 @@ const DEPLOYED_BACKEND =
     "https://library-management-backend-production.up.railway.app";
 const LOCAL_ORIGIN = process.env.LOCAL_ORIGIN || "http://localhost:3000";
 
-const allowlist = [
-    FRONTEND_ORIGIN,
-    DEPLOYED_BACKEND,
-    LOCAL_ORIGIN,
-    "https://library-management-backend-production.up.railway.app/api/docs",
-    "*",
-];
+const allowlist = [FRONTEND_ORIGIN, DEPLOYED_BACKEND, LOCAL_ORIGIN, "https://library-management-backend-production.up.railway.app/api/docs"];
+
+// Regex to match any localhost origin with any port, including 127.0.0.1 and ::1
+const localhostRegex = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:(\d+))?$/i;
 
 const corsOptions = {
     origin: function (origin, callback) {
         // allow requests with no origin (like curl or server-to-server)
         if (!origin) return callback(null, true);
-        if (allowlist.indexOf(origin) !== -1) {
-            return callback(null, true);
-        }
-        return callback(
-            new Error("CORS policy: This origin is not allowed"),
-            false
-        );
+
+        // allow explicit allowlist matches
+        if (allowlist.indexOf(origin) !== -1) return callback(null, true);
+
+        // allow any localhost origin on any port (http or https)
+        if (localhostRegex.test(origin)) return callback(null, true);
+
+        return callback(new Error("CORS policy: This origin is not allowed"), false);
     },
     credentials: true,
     optionsSuccessStatus: 200,
