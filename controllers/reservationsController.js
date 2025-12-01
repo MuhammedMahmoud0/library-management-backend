@@ -22,15 +22,20 @@ async function createReservation(req, res) {
         expiry = new Date();
         expiry.setDate(expiry.getDate() + 3);
     }
-    if (isNaN(expiry.getTime())) return res.status(400).json({ error: "Invalid ReservationExpiryDate" });
+    if (isNaN(expiry.getTime()))
+        return res.status(400).json({ error: "Invalid ReservationExpiryDate" });
 
     const reservationDateSql = formatDateToSQL(new Date());
     const expirySql = formatDateToSQL(expiry);
 
     try {
         // Ensure book exists
-        const [books] = await pool.execute("SELECT BookID FROM Books WHERE BookID = ?", [BookID]);
-        if (!books || books.length === 0) return res.status(404).json({ error: "Book not found" });
+        const [books] = await pool.execute(
+            "SELECT BookID FROM Books WHERE BookID = ?",
+            [BookID]
+        );
+        if (!books || books.length === 0)
+            return res.status(404).json({ error: "Book not found" });
 
         const [result] = await pool.execute(
             "INSERT INTO Reservation (BookID, CusID, ReservationDate, ReservationExpiryDate, Status) VALUES (?, ?, ?, ?, ?)",
