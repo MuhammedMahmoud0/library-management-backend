@@ -63,6 +63,7 @@ async function createBook(req, res) {
         Category,
         Title,
         Author,
+        Description,
         Price,
         Quantity,
         Available_Copies,
@@ -76,11 +77,12 @@ async function createBook(req, res) {
         return res.status(400).json({ error: "Title and Author required" });
     try {
         const [result] = await pool.execute(
-            "INSERT INTO Books (Category, Title, Author, Price, Quantity, Available_Copies, Pub_Year, Pub_Name, Cover, Rating, Availability) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO Books (Category, Title, Author, Description, Price, Quantity, Available_Copies, Pub_Year, Pub_Name, Cover, Rating, Availability) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 Category || null,
                 Title,
                 Author,
+                Description || null,
                 Price || null,
                 Quantity || 0,
                 Available_Copies || Quantity || 0,
@@ -105,6 +107,7 @@ async function updateBook(req, res) {
     const allowed = [
         "Category",
         "Title",
+        "Description",
         "Author",
         "Price",
         "Quantity",
