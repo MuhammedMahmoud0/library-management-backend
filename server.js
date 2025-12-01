@@ -3,6 +3,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
+const booksRoutes = require("./routes/books");
+const borrowingsRoutes = require("./routes/borrowings");
+const reservationsRoutes = require("./routes/reservations");
+const historyRoutes = require("./routes/history");
+const membersRoutes = require("./routes/members");
+const reportsRoutes = require("./routes/reports");
+const dashboardRoutes = require("./routes/dashboard");
 
 const app = express();
 const swaggerRouter = require("./swagger");
@@ -47,6 +54,13 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/docs", swaggerRouter);
+app.use("/api/books", booksRoutes);
+app.use("/api/borrowings", borrowingsRoutes);
+app.use("/api/reservations", reservationsRoutes);
+app.use("/api/history", historyRoutes);
+app.use("/api/members", membersRoutes);
+app.use("/api/reports", reportsRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
     res.json({ status: "ok", message: "Library management backend" });
