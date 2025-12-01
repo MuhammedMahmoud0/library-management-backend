@@ -28,6 +28,7 @@ const allowlist = [
     DEPLOYED_BACKEND,
     LOCAL_ORIGIN,
     "https://library-management-backend-production.up.railway.app/api/docs",
+    "*",
 ];
 
 const corsOptions = {
