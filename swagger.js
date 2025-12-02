@@ -1,3 +1,8 @@
+const swaggerUi = require("swagger-ui-express");
+const express = require("express");
+
+const router = express.Router();
+
 const swaggerSpec = {
     openapi: "3.0.0",
     info: {
