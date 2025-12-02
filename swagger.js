@@ -37,10 +37,16 @@ const swaggerSpec = {
                 properties: {
                     BookID: { type: "integer" },
                     BookTitle: { type: "string" },
+                    Description: { type: "string" },
                     BookAuthor: { type: "string" },
                     BookISBN: { type: "string" },
                     BookCategory: { type: "string" },
                     BookCopies: { type: "integer" },
+                    BookCover: {
+                        type: "string",
+                        format: "uri",
+                        description: "URL or path to the book cover image",
+                    },
                 },
             },
             Borrowing: {
@@ -49,6 +55,8 @@ const swaggerSpec = {
                     BorrowingID: { type: "integer" },
                     UserID: { type: "integer" },
                     BookID: { type: "integer" },
+                    BookTitle: { type: "string" },
+                    BookCover: { type: "string", format: "uri" },
                     BorrowDate: { type: "string", format: "date-time" },
                     DueDate: { type: "string", format: "date-time" },
                     ReturnedDate: {
@@ -63,6 +71,8 @@ const swaggerSpec = {
                     ReservationID: { type: "integer" },
                     UserID: { type: "integer" },
                     BookID: { type: "integer" },
+                    BookTitle: { type: "string" },
+                    BookCover: { type: "string", format: "uri" },
                     ReservationDate: { type: "string", format: "date-time" },
                     Status: { type: "string" },
                 },

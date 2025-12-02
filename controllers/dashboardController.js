@@ -5,11 +5,21 @@ async function userDashboard(req, res) {
     if (!user) return res.status(401).json({ error: "not authenticated" });
     try {
         const [borrowings] = await pool.execute(
-            "SELECT * FROM Borrowing WHERE CusID = ? ORDER BY BorrowDate DESC LIMIT 5",
+            `SELECT b.*, bk.Title as BookTitle, bk.Cover as BookCover
+             FROM Borrowing b
+             LEFT JOIN Books bk ON b.BookID = bk.BookID
+             WHERE b.CusID = ?
+             ORDER BY b.BorrowDate DESC
+             LIMIT 5`,
             [user.userId]
         );
         const [reservations] = await pool.execute(
-            "SELECT * FROM Reservation WHERE CusID = ? ORDER BY ReservationDate DESC LIMIT 5",
+            `SELECT r.*, bk.Title as BookTitle, bk.Cover as BookCover
+             FROM Reservation r
+             LEFT JOIN Books bk ON r.BookID = bk.BookID
+             WHERE r.CusID = ?
+             ORDER BY r.ReservationDate DESC
+             LIMIT 5`,
             [user.userId]
         );
         res.json({ borrowings, reservations });
