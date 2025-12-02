@@ -132,18 +132,20 @@ async function getFine(req, res) {
     const user = req.user;
     if (!user) return res.status(401).json({ error: "not authenticated" });
     try {
-        const [[r]] = await pool.query(
+        const [rows] = await pool.query(
             "SELECT * FROM Invoice WHERE InvoiceID = ?",
             [id]
         );
+        const r = rows[0];
         if (!r) return res.status(404).json({ error: "not found" });
         // ownership check
         if (user.role !== "admin") {
-            const [[br]] = await pool.query(
+            const [brRows2] = await pool.query(
                 "SELECT CusID FROM Borrowing WHERE BorrowID = ?",
                 [r.BorrowID]
             );
-            if (!br || br.CusID !== user.userId)
+            const br2 = brRows2[0];
+            if (!br2 || br2.CusID !== user.userId)
                 return res.status(403).json({ error: "forbidden" });
         }
         const [brRows] = await pool.query(
@@ -165,8 +167,11 @@ async function getFine(req, res) {
             PaidDate: r.PaymentDate || null,
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "internal server error" });
+        console.error("getFine error:", err.message, err.stack);
+        res.status(500).json({
+            error: "internal server error",
+            details: err.message,
+        });
     }
 }
 
@@ -176,16 +181,18 @@ async function payFine(req, res) {
     const user = req.user;
     if (!user) return res.status(401).json({ error: "not authenticated" });
     try {
-        const [[r]] = await pool.query(
+        const [rows] = await pool.query(
             "SELECT * FROM Invoice WHERE InvoiceID = ?",
             [id]
         );
+        const r = rows[0];
         if (!r) return res.status(404).json({ error: "not found" });
         if (user.role !== "admin") {
-            const [[br]] = await pool.query(
+            const [brRows] = await pool.query(
                 "SELECT CusID FROM Borrowing WHERE BorrowID = ?",
                 [r.BorrowID]
             );
+            const br = brRows[0];
             if (!br || br.CusID !== user.userId)
                 return res.status(403).json({ error: "forbidden" });
         }
@@ -199,8 +206,11 @@ async function payFine(req, res) {
             fine: { FineID: id, Status: "paid", PaidDate: paidDate },
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "internal server error" });
+        console.error("payFine error:", err.message, err.stack);
+        res.status(500).json({
+            error: "internal server error",
+            details: err.message,
+        });
     }
 }
 
@@ -212,10 +222,11 @@ async function waiveFine(req, res) {
     if (user.role !== "admin")
         return res.status(403).json({ error: "forbidden" });
     try {
-        const [[r]] = await pool.query(
+        const [rows] = await pool.query(
             "SELECT * FROM Invoice WHERE InvoiceID = ?",
             [id]
         );
+        const r = rows[0];
         if (!r) return res.status(404).json({ error: "not found" });
         const waivedDate = new Date().toISOString();
         const reason = req.body.reason || null;
@@ -228,8 +239,11 @@ async function waiveFine(req, res) {
             fine: { FineID: id, Status: "waived" },
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "internal server error" });
+        console.error("waiveFine error:", err.message, err.stack);
+        res.status(500).json({
+            error: "internal server error",
+            details: err.message,
+        });
     }
 }
 

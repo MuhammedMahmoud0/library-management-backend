@@ -8,6 +8,9 @@ router.use(authenticate);
 // Admin: list all fines with pagination and optional status filter
 router.get("/", authorize(["admin"]), fines.listFines);
 
+// Statistics (admin) - MUST be before /:id to avoid matching "statistics" as an id
+router.get("/statistics", authorize(["admin"]), fines.finesStatistics);
+
 // User: list own fines
 router.get("/my", fines.myFines);
 
@@ -19,8 +22,5 @@ router.post("/:id/pay", fines.payFine);
 
 // Waive a fine (admin only)
 router.post("/:id/waive", authorize(["admin"]), fines.waiveFine);
-
-// Statistics (admin)
-router.get("/statistics", authorize(["admin"]), fines.finesStatistics);
 
 module.exports = router;
