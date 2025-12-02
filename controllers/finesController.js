@@ -196,7 +196,8 @@ async function payFine(req, res) {
             if (!br || br.CusID !== user.userId)
                 return res.status(403).json({ error: "forbidden" });
         }
-        const paidDate = new Date().toISOString();
+        // Format date as YYYY-MM-DD for MySQL DATE column
+        const paidDate = new Date().toISOString().split("T")[0];
         const [result] = await pool.execute(
             "UPDATE Invoice SET PaymentDate = ?, Status = ? WHERE InvoiceID = ?",
             [paidDate, "paid", id]

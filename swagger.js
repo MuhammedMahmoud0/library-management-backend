@@ -112,13 +112,8 @@ const swaggerSpec = {
                         type: "string",
                         enum: ["unpaid", "paid", "waived"],
                     },
-                    IssueDate: { type: "string", format: "date-time" },
-                    PaidDate: { type: ["string", "null"], format: "date-time" },
-                    PaymentMethod: { type: ["string", "null"] },
-                    WaivedDate: {
-                        type: ["string", "null"],
-                        format: "date-time",
-                    },
+                    IssueDate: { type: ["string", "null"], format: "date" },
+                    PaidDate: { type: ["string", "null"], format: "date" },
                 },
             },
         },
@@ -913,22 +908,33 @@ const swaggerSpec = {
                         schema: { type: "integer" },
                     },
                 ],
-                requestBody: {
-                    required: false,
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    paymentMethod: { type: "string" },
+                responses: {
+                    200: {
+                        description: "Paid",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        message: { type: "string" },
+                                        fine: {
+                                            type: "object",
+                                            properties: {
+                                                FineID: { type: "integer" },
+                                                Status: { type: "string" },
+                                                PaidDate: {
+                                                    type: "string",
+                                                    format: "date",
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         },
                     },
-                },
-                responses: {
-                    200: { description: "Paid" },
                     403: { description: "Forbidden" },
+                    404: { description: "Not found" },
                 },
             },
         },
