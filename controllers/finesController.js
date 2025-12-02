@@ -27,28 +27,28 @@ async function listFines(req, res) {
             // admin can filter by status
             if (status === "paid") {
                 [rows] = await pool.execute(
-                    "SELECT i.*, b.BookID, b.Title as BookTitle FROM Invoice i LEFT JOIN Borrowing br ON i.BorrowID = br.BorrowID LEFT JOIN Books b ON br.BookID = b.BookID WHERE i.Status = 'paid' ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
+                    "SELECT i.* FROM Invoice i WHERE i.Status = 'paid' ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
                     [limit, offset]
                 );
-                [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.execute(
                     "SELECT COUNT(*) as cnt FROM Invoice WHERE Status = 'paid'"
                 );
                 totalRows = cnt;
             } else if (status === "unpaid") {
                 [rows] = await pool.execute(
-                    "SELECT i.*, b.BookID, b.Title as BookTitle FROM Invoice i LEFT JOIN Borrowing br ON i.BorrowID = br.BorrowID LEFT JOIN Books b ON br.BookID = b.BookID WHERE i.Status IN ('unpaid','pending','Pending') ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
+                    "SELECT i.* FROM Invoice i WHERE i.Status IN ('unpaid','pending','Pending') ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
                     [limit, offset]
                 );
-                [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.execute(
                     "SELECT COUNT(*) as cnt FROM Invoice WHERE Status IN ('unpaid','pending','Pending')"
                 );
                 totalRows = cnt;
             } else {
                 [rows] = await pool.execute(
-                    "SELECT i.*, b.BookID, b.Title as BookTitle FROM Invoice i LEFT JOIN Borrowing br ON i.BorrowID = br.BorrowID LEFT JOIN Books b ON br.BookID = b.BookID ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
+                    "SELECT i.* FROM Invoice i ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
                     [limit, offset]
                 );
-                [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.execute(
                     "SELECT COUNT(*) as cnt FROM Invoice"
                 );
                 totalRows = cnt;
@@ -56,9 +56,8 @@ async function listFines(req, res) {
         } else {
             // customers only their fines via Borrowing
             [rows] = await pool.execute(
-                `SELECT i.*, b.BookID, b.Title as BookTitle FROM Invoice i
+                `SELECT i.* FROM Invoice i
                  JOIN Borrowing br ON i.BorrowID = br.BorrowID
-                 JOIN Books b ON br.BookID = b.BookID
                  WHERE br.CusID = ?
                  ORDER BY i.InvoiceID DESC
                  LIMIT ? OFFSET ?`,
@@ -115,8 +114,11 @@ async function listFines(req, res) {
 
         res.json({ fines, total: totalRows, page, limit });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "internal server error" });
+        console.error("listFines error:", err.message, err.stack);
+        res.status(500).json({
+            error: "internal server error",
+            details: err.message,
+        });
     }
 }
 
