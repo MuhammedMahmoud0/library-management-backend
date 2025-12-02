@@ -1,8 +1,3 @@
-const swaggerUi = require("swagger-ui-express");
-const express = require("express");
-
-const router = express.Router();
-
 const swaggerSpec = {
     openapi: "3.0.0",
     info: {
@@ -10,8 +5,6 @@ const swaggerSpec = {
         version: "1.0.0",
         description: "Auth endpoints for the Library Management backend",
     },
-    // If API_URL is set (production), use it; otherwise use a relative URL ('/') so
-    // Swagger UI issues requests to the same origin as the docs (avoids mixed-content / CORS issues).
     servers: [{ url: process.env.API_URL || "/" }],
     components: {
         securitySchemes: {
@@ -36,45 +29,51 @@ const swaggerSpec = {
                 type: "object",
                 properties: {
                     BookID: { type: "integer" },
-                    BookTitle: { type: "string" },
-                    Description: { type: "string" },
-                    BookAuthor: { type: "string" },
-                    BookISBN: { type: "string" },
-                    BookCategory: { type: "string" },
-                    BookCopies: { type: "integer" },
-                    BookCover: {
+                    Category: { type: "string" },
+                    Title: { type: "string" },
+                    Author: { type: "string" },
+                    Price: { type: "number", format: "decimal" },
+                    Quantity: { type: "integer" },
+                    Available_Copies: { type: "integer" },
+                    Pub_Year: { type: "integer" },
+                    Pub_Name: { type: "string" },
+                    Cover: {
                         type: "string",
                         format: "uri",
                         description: "URL or path to the book cover image",
                     },
+                    Rating: { type: "number" },
+                    Availability: { type: "boolean" },
                 },
             },
             Borrowing: {
                 type: "object",
                 properties: {
-                    BorrowingID: { type: "integer" },
-                    UserID: { type: "integer" },
+                    BorrowID: { type: "integer" },
                     BookID: { type: "integer" },
+                    CusID: { type: "integer" },
+                    BorrowDate: { type: "string", format: "date" },
+                    DueDate: { type: "string", format: "date" },
+                    ReturnDate: { type: ["string", "null"], format: "date" },
+                    Status: { type: "string" },
                     BookTitle: { type: "string" },
                     BookCover: { type: "string", format: "uri" },
-                    BorrowDate: { type: "string", format: "date-time" },
-                    DueDate: { type: "string", format: "date-time" },
-                    ReturnedDate: {
-                        type: ["string", "null"],
-                        format: "date-time",
-                    },
                 },
             },
             Reservation: {
                 type: "object",
                 properties: {
                     ReservationID: { type: "integer" },
-                    UserID: { type: "integer" },
                     BookID: { type: "integer" },
+                    CusID: { type: "integer" },
+                    ReservationDate: { type: "string", format: "date" },
+                    ReservationExpiryDate: {
+                        type: ["string", "null"],
+                        format: "date",
+                    },
+                    Status: { type: "string" },
                     BookTitle: { type: "string" },
                     BookCover: { type: "string", format: "uri" },
-                    ReservationDate: { type: "string", format: "date-time" },
-                    Status: { type: "string" },
                 },
             },
             Member: {
