@@ -74,26 +74,42 @@ async function listFines(req, res) {
         // map rows to include DaysOverdue calculated from Borrowing due date
         const fines = await Promise.all(
             rows.map(async (r) => {
-                // fetch borrowing due date
-                const [[br]] = await pool.execute(
-                    "SELECT DueDate, BookID, CusID FROM Borrowing WHERE BorrowID = ?",
-                    [r.BorrowID]
-                );
-                const due = br ? br.DueDate : null;
-                const days = daysOverdue(due, r.PaymentDate || r.IssueDate);
-                return {
-                    FineID: r.InvoiceID,
-                    BorrowID: r.BorrowID,
-                    UserID: br ? br.CusID : null,
-                    BookID: br ? br.BookID : null,
-                    Amount: parseFloat(r.Amount) || 0,
-                    Reason: r.Fine ? "Overdue" : "Charge",
-                    DaysOverdue: days,
-                    Status: r.Status,
-                    IssueDate: r.PaymentDate || r.PaymentDate || null,
-                    PaidDate: r.PaymentDate || null,
-                    PaymentMethod: r.PaymentMethod || null,
-                };
+                try {
+                    // fetch borrowing due date
+                    const [brRows] = await pool.execute(
+                        "SELECT DueDate, BookID, CusID FROM Borrowing WHERE BorrowID = ?",
+                        [r.BorrowID]
+                    );
+                    const br = brRows[0] || null;
+                    const due = br ? br.DueDate : null;
+                    const days = daysOverdue(due, r.PaymentDate);
+                    return {
+                        FineID: r.InvoiceID,
+                        BorrowID: r.BorrowID,
+                        UserID: br ? br.CusID : null,
+                        BookID: br ? br.BookID : null,
+                        Amount: parseFloat(r.Amount) || 0,
+                        Reason: r.Fine > 0 ? "Overdue" : "Charge",
+                        DaysOverdue: days,
+                        Status: r.Status || "unpaid",
+                        IssueDate: r.PaymentDate || null,
+                        PaidDate: r.PaymentDate || null,
+                    };
+                } catch (err) {
+                    console.error("Error mapping fine row:", err);
+                    return {
+                        FineID: r.InvoiceID,
+                        BorrowID: r.BorrowID,
+                        UserID: null,
+                        BookID: null,
+                        Amount: parseFloat(r.Amount) || 0,
+                        Reason: "Charge",
+                        DaysOverdue: 0,
+                        Status: r.Status || "unpaid",
+                        IssueDate: null,
+                        PaidDate: r.PaymentDate || null,
+                    };
+                }
             })
         );
 
@@ -131,27 +147,23 @@ async function getFine(req, res) {
             if (!br || br.CusID !== user.userId)
                 return res.status(403).json({ error: "forbidden" });
         }
-        const [[br]] = await pool.query(
+        const [brRows] = await pool.query(
             "SELECT DueDate, BookID, CusID FROM Borrowing WHERE BorrowID = ?",
             [r.BorrowID]
         );
-        const days = daysOverdue(
-            br ? br.DueDate : null,
-            r.PaymentDate || r.PaymentDate || null
-        );
+        const br = brRows[0] || null;
+        const days = daysOverdue(br ? br.DueDate : null, r.PaymentDate || null);
         res.json({
             FineID: r.InvoiceID,
             BorrowID: r.BorrowID,
             UserID: br ? br.CusID : null,
             BookID: br ? br.BookID : null,
             Amount: parseFloat(r.Amount) || 0,
-            Reason: r.Fine ? "Overdue" : "Charge",
+            Reason: r.Fine > 0 ? "Overdue" : "Charge",
             DaysOverdue: days,
-            Status: r.Status,
+            Status: r.Status || "unpaid",
             IssueDate: r.PaymentDate || null,
             PaidDate: r.PaymentDate || null,
-            PaymentMethod: r.PaymentMethod || null,
-            WaivedDate: r.WaivedDate || null,
         });
     } catch (err) {
         console.error(err);
@@ -178,11 +190,10 @@ async function payFine(req, res) {
             if (!br || br.CusID !== user.userId)
                 return res.status(403).json({ error: "forbidden" });
         }
-        const paymentMethod = req.body.paymentMethod || null;
         const paidDate = new Date().toISOString();
         const [result] = await pool.execute(
-            "UPDATE Invoice SET PaymentDate = ?, Status = ?, PaymentMethod = ? WHERE InvoiceID = ?",
-            [paidDate, "paid", paymentMethod, id]
+            "UPDATE Invoice SET PaymentDate = ?, Status = ? WHERE InvoiceID = ?",
+            [paidDate, "paid", id]
         );
         res.json({
             message: "Fine paid successfully",
@@ -210,12 +221,12 @@ async function waiveFine(req, res) {
         const waivedDate = new Date().toISOString();
         const reason = req.body.reason || null;
         const [result] = await pool.execute(
-            "UPDATE Invoice SET Status = ?, WaivedDate = ? WHERE InvoiceID = ?",
-            ["waived", waivedDate, id]
+            "UPDATE Invoice SET Status = ? WHERE InvoiceID = ?",
+            ["waived", id]
         );
         res.json({
             message: "Fine waived successfully",
-            fine: { FineID: id, Status: "waived", WaivedDate: waivedDate },
+            fine: { FineID: id, Status: "waived" },
         });
     } catch (err) {
         console.error(err);
