@@ -72,6 +72,15 @@ async function createBorrowing(req, res) {
                 "INSERT INTO Borrowing (BookID, CusID, BorrowDate, DueDate, Status) VALUES (?, ?, ?, ?, ?)",
                 [BookID, user.userId, borrowDateSql, dueSql, "borrowed"]
             );
+            // Create a fixed-price invoice for this borrowing (default 100)
+            const defaultFine = parseFloat(
+                process.env.DEFAULT_FINE_AMOUNT || "100"
+            );
+            await conn.execute(
+                "INSERT INTO Invoice (BorrowID, Amount, Fine, PaymentDate, Status) VALUES (?, ?, ?, ?, ?)",
+                [result.insertId, defaultFine, 0, null, "unpaid"]
+            );
+
             await conn.execute(
                 "UPDATE Books SET Available_Copies = Available_Copies - 1 WHERE BookID = ?",
                 [BookID]
