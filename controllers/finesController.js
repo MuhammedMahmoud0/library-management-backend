@@ -26,29 +26,26 @@ async function listFines(req, res) {
         if (user.role === "admin") {
             // admin can filter by status
             if (status === "paid") {
-                [rows] = await pool.execute(
-                    "SELECT i.* FROM Invoice i WHERE i.Status = 'paid' ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
-                    [limit, offset]
+                [rows] = await pool.query(
+                    `SELECT i.* FROM Invoice i WHERE i.Status = 'paid' ORDER BY i.InvoiceID DESC LIMIT ${limit} OFFSET ${offset}`
                 );
-                const [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.query(
                     "SELECT COUNT(*) as cnt FROM Invoice WHERE Status = 'paid'"
                 );
                 totalRows = cnt;
             } else if (status === "unpaid") {
-                [rows] = await pool.execute(
-                    "SELECT i.* FROM Invoice i WHERE i.Status IN ('unpaid','pending','Pending') ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
-                    [limit, offset]
+                [rows] = await pool.query(
+                    `SELECT i.* FROM Invoice i WHERE i.Status IN ('unpaid','pending','Pending') ORDER BY i.InvoiceID DESC LIMIT ${limit} OFFSET ${offset}`
                 );
-                const [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.query(
                     "SELECT COUNT(*) as cnt FROM Invoice WHERE Status IN ('unpaid','pending','Pending')"
                 );
                 totalRows = cnt;
             } else {
-                [rows] = await pool.execute(
-                    "SELECT i.* FROM Invoice i ORDER BY i.InvoiceID DESC LIMIT ? OFFSET ?",
-                    [limit, offset]
+                [rows] = await pool.query(
+                    `SELECT i.* FROM Invoice i ORDER BY i.InvoiceID DESC LIMIT ${limit} OFFSET ${offset}`
                 );
-                const [[{ cnt }]] = await pool.execute(
+                const [[{ cnt }]] = await pool.query(
                     "SELECT COUNT(*) as cnt FROM Invoice"
                 );
                 totalRows = cnt;
@@ -60,8 +57,8 @@ async function listFines(req, res) {
                  JOIN Borrowing br ON i.BorrowID = br.BorrowID
                  WHERE br.CusID = ?
                  ORDER BY i.InvoiceID DESC
-                 LIMIT ? OFFSET ?`,
-                [user.userId, limit, offset]
+                 LIMIT ${limit} OFFSET ${offset}`,
+                [user.userId]
             );
             const [[{ cnt }]] = await pool.execute(
                 `SELECT COUNT(*) as cnt FROM Invoice i JOIN Borrowing br ON i.BorrowID = br.BorrowID WHERE br.CusID = ?`,
