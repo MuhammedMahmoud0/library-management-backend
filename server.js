@@ -10,6 +10,7 @@ const historyRoutes = require("./routes/history");
 const membersRoutes = require("./routes/members");
 const reportsRoutes = require("./routes/reports");
 const dashboardRoutes = require("./routes/dashboard");
+const finesRoutes = require("./routes/fines");
 
 const app = express();
 const swaggerRouter = require("./swagger");
@@ -69,6 +70,7 @@ app.use("/api/history", historyRoutes);
 app.use("/api/members", membersRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/fines", finesRoutes);
 
 app.get("/", (req, res) => {
     res.json({ status: "ok", message: "Library management backend" });

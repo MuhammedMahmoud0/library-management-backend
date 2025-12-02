@@ -98,6 +98,29 @@ const swaggerSpec = {
                     count: { type: "integer" },
                 },
             },
+            Fine: {
+                type: "object",
+                properties: {
+                    FineID: { type: "integer" },
+                    BorrowID: { type: "integer" },
+                    UserID: { type: "integer" },
+                    BookID: { type: "integer" },
+                    Amount: { type: "number", format: "decimal" },
+                    Reason: { type: "string" },
+                    DaysOverdue: { type: "integer" },
+                    Status: {
+                        type: "string",
+                        enum: ["unpaid", "paid", "waived"],
+                    },
+                    IssueDate: { type: "string", format: "date-time" },
+                    PaidDate: { type: ["string", "null"], format: "date-time" },
+                    PaymentMethod: { type: ["string", "null"] },
+                    WaivedDate: {
+                        type: ["string", "null"],
+                        format: "date-time",
+                    },
+                },
+            },
         },
     },
     paths: {
@@ -798,6 +821,156 @@ const swaggerSpec = {
                 tags: ["Reports"],
                 security: [{ BearerAuth: [] }],
                 responses: { 200: { description: "OK" } },
+            },
+        },
+        "/api/fines": {
+            get: {
+                summary: "Get all fines (admin)",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "page",
+                        in: "query",
+                        schema: { type: "integer", default: 1 },
+                    },
+                    {
+                        name: "limit",
+                        in: "query",
+                        schema: { type: "integer", default: 20 },
+                    },
+                    {
+                        name: "status",
+                        in: "query",
+                        schema: {
+                            type: "string",
+                            enum: ["paid", "unpaid", "all"],
+                            default: "all",
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "OK",
+                        content: {
+                            "application/json": { schema: { type: "object" } },
+                        },
+                    },
+                    403: { description: "Forbidden" },
+                },
+            },
+        },
+        "/api/fines/my": {
+            get: {
+                summary: "Get current user's fines",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                responses: {
+                    200: {
+                        description: "OK",
+                        content: {
+                            "application/json": { schema: { type: "object" } },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/fines/{id}": {
+            get: {
+                summary: "Get fine details",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: { type: "integer" },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: "OK",
+                        content: {
+                            "application/json": {
+                                schema: { $ref: "#/components/schemas/Fine" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/fines/{id}/pay": {
+            post: {
+                summary: "Pay a fine",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: { type: "integer" },
+                    },
+                ],
+                requestBody: {
+                    required: false,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    paymentMethod: { type: "string" },
+                                },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: { description: "Paid" },
+                    403: { description: "Forbidden" },
+                },
+            },
+        },
+        "/api/fines/{id}/waive": {
+            post: {
+                summary: "Waive a fine (admin)",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        required: true,
+                        schema: { type: "integer" },
+                    },
+                ],
+                requestBody: {
+                    required: false,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: { reason: { type: "string" } },
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: { description: "Waived" },
+                    403: { description: "Forbidden" },
+                },
+            },
+        },
+        "/api/fines/statistics": {
+            get: {
+                summary: "Get fine statistics (admin)",
+                tags: ["Fines"],
+                security: [{ BearerAuth: [] }],
+                responses: {
+                    200: { description: "OK" },
+                    403: { description: "Forbidden" },
+                },
             },
         },
         "/api/dashboard/user": {
