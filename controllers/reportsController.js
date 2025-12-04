@@ -68,15 +68,15 @@ async function memberActivity(req, res) {
         // Aggregate per-customer activity in a single query using LEFT JOINs and conditional aggregation
         const sql = `
                 SELECT
-                    c.CusID as id,
-                    c.Name as name,
-                    c.Email as email,
+                    c.UserID as id,
+                    CONCAT(IFNULL(c.UserFirstName,''), ' ', IFNULL(c.UserLastName,'')) as name,
+                    c.UserName as email,
                     IFNULL(b.totalBorrowings,0) as totalBorrowings,
                     IFNULL(b.activeBorrowings,0) as activeBorrowings,
                     IFNULL(r.totalReservations,0) as totalReservations,
                     IFNULL(b.returnedBooks,0) as \`Returned Books\`,
                     IFNULL(b.overdueBooks,0) as overdueBooks
-                FROM Customers c
+                FROM Users c
                 LEFT JOIN (
                     SELECT
                         CusID,
@@ -86,10 +86,10 @@ async function memberActivity(req, res) {
                         SUM(CASE WHEN ReturnDate IS NULL AND DueDate < CURDATE() THEN 1 ELSE 0 END) as overdueBooks
                     FROM Borrowing
                     GROUP BY CusID
-                ) b ON b.CusID = c.CusID
+                ) b ON b.CusID = c.UserID
                 LEFT JOIN (
                     SELECT CusID, COUNT(*) as totalReservations FROM Reservation GROUP BY CusID
-                ) r ON r.CusID = c.CusID
+                ) r ON r.CusID = c.UserID
                 ORDER BY totalBorrowings DESC
                 LIMIT 1000
                 `;
