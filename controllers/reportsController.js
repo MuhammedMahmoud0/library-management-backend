@@ -70,7 +70,7 @@ async function memberActivity(req, res) {
                 SELECT
                     c.UserID as id,
                     CONCAT(IFNULL(c.UserFirstName,''), ' ', IFNULL(c.UserLastName,'')) as name,
-                    c.UserName as email,
+                    c.UserName,
                     IFNULL(b.totalBorrowings,0) as totalBorrowings,
                     IFNULL(b.activeBorrowings,0) as activeBorrowings,
                     IFNULL(r.totalReservations,0) as totalReservations,
